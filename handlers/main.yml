@@ -1,9 +1,34 @@
----
+- name: verify and reload apache2
+  shell: apache2ctl configtest 2>&1
+  register: apache2_reload_apache2ctl_configtest_out
+  notify:
+    - show apache2ctl configtest output for reload
+    - reload apache2
+
+- name: show apache2ctl configtest output for reload
+  debug:
+    msg: "{{ apache2_reload_apache2ctl_configtest_out['stdout'] }}"
+
 - name: reload apache2
-  shell: systemctl reload apache2.service
+  systemd:
+    name: apache2.service
+    state: reloaded
+    enabled: True
+
+
+- name: verify and restart apache2
+  shell: apache2ctl configtest 2>&1
+  register: apache2_restart_apache2ctl_configtest_out
+  notify:
+    - show apache2ctl configtest output for restart
+    - restart apache2
+
+- name: show apache2ctl configtest output for restart
+  debug:
+    msg: "{{ apache2_restart_apache2ctl_configtest_out['stdout'] }}"
 
 - name: restart apache2
-  shell: systemctl restart apache2.service
-
-- name: verify apache2 config
-  shell: apache2ctl configtest
+  systemd:
+    name: apache2.service
+    state: restarted
+    enabled: True
