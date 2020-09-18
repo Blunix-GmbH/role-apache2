@@ -7,7 +7,8 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 
 
 def test_module_package_present(host):
-    assert host.package('libapache2-modsecurity')
+    assert host.package('libapache2-mod-security2')
+
 
 def test_module_package_absent(host):
-    assert not host.package('libapache2-mod-nss').is_installed
+    assert not host.package('libapache2-mod-dnssd').is_installed

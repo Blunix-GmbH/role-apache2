@@ -1,44 +1,38 @@
 - name: install apache2
   apt:
-    pkg:
+    name:
       - apache2
-      - python-passlib
+      - python3-passlib
     state: present
-    update_cache: no
 
 - name: install custom packages related to apache2
   apt:
-    pkg: "{{ apache2_module_packages_installed }}"
+    name: "{{ apache2_module_packages_installed }}"
     state: present
-    update_cache: no
-  notify:
-    - verify and restart apache2
+  notify: restart apache2
 
 - name: uninstall custom packages related to apache2
   apt:
-    pkg: "{{ apache2_module_packages_removed }}"
+    name: "{{ apache2_module_packages_removed }}"
     state: absent
-    update_cache: no
-  notify:
-    - verify and restart apache2
+    update_cache: False
+  notify: restart apache2
 
 - name: disable apache2 modules
-  command: a2dismod -f {{ apache2_mod_disable }}
-  with_items: '{{ apache2_disable_modules }}'
+  command: "a2dismod -f {{ apache2_mod_disable }}"
+  with_items: "{{ apache2_disable_modules }}"
   loop_control:
     loop_var: apache2_mod_disable
-  changed_when: no
-  notify:
-    - verify and restart apache2
+  changed_when: False
+  notify: restart apache2
 
 - name: enable apache2 modules
-  command: a2enmod {{ apache2_mod_enable }}
-  with_items: '{{ apache2_enable_modules }}'
+  command: "a2enmod {{ apache2_mod_enable }}"
+  with_items: "{{ apache2_enable_modules }}"
   loop_control:
     loop_var: apache2_mod_enable
-  changed_when: no
-  notify:
-    - verify and restart apache2
+  changed_when: False
+  notify: restart apache2
 
 - name: template /etc/apache2/apache2.conf
   template:
@@ -98,23 +92,21 @@
 
 - name: remove apache2_vhosts_absent from /etc/apache2/sites-enabled
   file:
-    path: /etc/apache2/sites-enabled/{{ absent_vhost_item }}
+    path: "/etc/apache2/sites-enabled/{{ absent_vhost_item }}.conf"
     state: absent
-  with_items: '{{ apache2_vhosts_absent }}'
+  with_items: "{{ apache2_vhosts_absent }}"
   loop_control:
     loop_var: absent_vhost_item
-  notify:
-    - verify and reload apache2
+  notify: reload apache2
 
 - name: remove apache2_vhosts_absent from /etc/apache2/sites-available
   file:
-    path: /etc/apache2/sites-available/{{ absent_vhost_item }}
+    path: "/etc/apache2/sites-available/{{ absent_vhost_item }}.conf"
     state: absent
-  with_items: '{{ apache2_vhosts_absent }}'
+  with_items: "{{ apache2_vhosts_absent }}"
   loop_control:
     loop_var: absent_vhost_item
-  notify:
-    - verify and reload apache2
+  notify: reload apache2
 
 - name: setup apache2 vhosts
   template:
@@ -123,11 +115,10 @@
     owner: root
     group: root
     mode: 0640
-  with_items: '{{ apache2_vhosts_present }}'
+  with_items: "{{ apache2_vhosts_present }}"
   loop_control:
     loop_var: present_vhost_item
-  notify:
-    - verify and reload apache2
+  notify: reload apache2
 
 - name: enable apache2 vhosts
   file:
@@ -137,8 +128,7 @@
     owner: root
     group: root
     mode: 0640
-  with_items: '{{ apache2_vhosts_present }}'
+  with_items: "{{ apache2_vhosts_present }}"
   loop_control:
     loop_var: present_vhost_item
-  notify:
-    - verify and reload apache2
+  notify: reload apache2
