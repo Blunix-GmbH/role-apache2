@@ -2,7 +2,7 @@
     IMPORTANT:
     Before pushing your pull-request, please take a moment to
     consider if your change includes all mandatory tests and please
-    also ensure that `make test` returns a zero exit-code.
+    also ensure that `make test` returns with a zero exit-code.
 -->
 
 <!--

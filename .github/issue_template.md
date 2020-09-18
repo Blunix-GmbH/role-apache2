@@ -1,6 +1,6 @@
 <!-- Please select accordingly and remove the other-->
 - I would like to report a bug.
-- I would like to request a feature.
+- I would like to propose a feature-request.
 
 # Description
 <!--

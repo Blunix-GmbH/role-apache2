@@ -12,6 +12,7 @@ def test_enabled_modules(host):
     assert f.is_symlink
     assert f.linked_to == '/etc/apache2/mods-available/security2.conf'
 
+
 def test_disabled_modules(host):
     f = host.file('/etc/apache2/mods-enabled/auth_basic.conf')
     assert not f.exists
